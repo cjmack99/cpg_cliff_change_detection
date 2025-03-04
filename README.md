@@ -1,5 +1,7 @@
 # cpg_cliff_change_detection
 Data processing pipeline for LiDAR point clouds
+Code for Mack et al 2024 "An Automated Workflow for Detecting Coastal Cliff Change in Large LiDAR Datasets"
+Published in _____
 
 This project is built for San Diego county on data collected by the Coastal Process Group (CPG) Field Crew from 2017-2024.
 
