@@ -13,6 +13,22 @@ Three main processing steps are included in this workflow:
 3. Extract change metrics using shore-normal, 2.75D grids
 
 
+Current workflow:
+- cpg lidar tools pipeline (matt's code)
+   spits out erosion2_dbscan.las
+
+- gridsV5 on iwa for grid making
+    spits out date_clusters_10x10cm.csv
+- clean_grids
+    spits out date_clusters_cleaned.csv
+- get_data
+    spits out date_clusters_cropped_cleaned.npy
+    these npy files can be used for all the plots
+
+
+
+
+
 
 The workflow goes as follows:
 
