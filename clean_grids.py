@@ -12,26 +12,23 @@ def load_csv_data(filepath):
       - header_labels: list of column labels (excluding the first column header)
       - row_labels: list of row labels (from the first column of each data row)
       - data: 2D NumPy array of numeric values (empty fields become np.nan)
+    
+    Optimizations:
+      - Reads the file only once instead of twice.
     """
     with open(filepath, 'r') as f:
-        header_line = f.readline().strip()
-    # Assume header is comma-separated; skip the first cell.
-    header_labels = header_line.split(',')[1:]
-    
+        lines = f.readlines()
+    header_labels = lines[0].strip().split(',')[1:]
     row_labels = []
     data_rows = []
-    with open(filepath, 'r') as f:
-        next(f)  # Skip header row.
-        for line in f:
-            parts = line.strip().split(',')
-            if not parts:
-                continue
-            row_labels.append(parts[0])
-            # Convert the remaining parts: if empty, use np.nan
-            row_data = [float(x) if x.strip() != '' else np.nan for x in parts[1:]]
-            data_rows.append(row_data)
-    
-    # Ensure we get a 2D array even if there's only one row.
+    for line in lines[1:]:
+        parts = line.strip().split(',')
+        if not parts:
+            continue
+        row_labels.append(parts[0])
+        # Convert the remaining parts: if empty, use np.nan
+        row_data = [float(x) if x.strip() != '' else np.nan for x in parts[1:]]
+        data_rows.append(row_data)
     data = np.array(data_rows)
     return header_labels, row_labels, data
 
@@ -48,9 +45,7 @@ def save_csv_data(filepath, data, header_labels, row_labels, testing, replace):
             print(f"File {filepath} exists and replace=False; skipping.")
         else:
             with open(filepath, 'w') as f:
-                # Write header row: first cell blank, then header labels.
                 f.write(',' + ','.join(header_labels) + '\n')
-                # Write each row: row label followed by data values.
                 for label, row in zip(row_labels, data):
                     formatted = [f'{val:g}' if not np.isnan(val) else '' for val in row]
                     f.write(f"{label}," + ",".join(formatted) + "\n")
@@ -59,9 +54,8 @@ def save_csv_data(filepath, data, header_labels, row_labels, testing, replace):
 def process_files_in_folder(date_folder, file_type, threshold=25):
     """
     Processes a single date folder for the given file type.
-    file_type: "erosion" or "accretion"
-      - For erosion, selects files WITHOUT "acc" in the name.
-      - For accretion, selects files WITH "acc" in the filename.
+    For erosion, selects files WITHOUT "acc" in the name.
+    For accretion, selects files WITH "acc" in the filename.
     Loads the cluster and grid CSVs (with headers and row labels) and filters out clusters
     that have fewer than 'threshold' nonzero cells.
     Returns a dictionary with:
@@ -70,6 +64,9 @@ def process_files_in_folder(date_folder, file_type, threshold=25):
       - filtered_clusters, filtered_grid,
       - and paths for the input files.
     Returns None if required files are not found.
+    
+    Optimizations:
+      - Uses list comprehensions and np.isin (which is a slight improvement over np.in1d).
     """
     files = os.listdir(date_folder)
     if file_type == "erosion":
@@ -98,8 +95,7 @@ def process_files_in_folder(date_folder, file_type, threshold=25):
     else:
         unique_ids, counts = np.unique(nonzero, return_counts=True)
         valid_ids = unique_ids[counts >= threshold]
-    mask = np.in1d(clusters, valid_ids).reshape(clusters.shape)
-    # Set cells that do not meet the threshold to 0 (or you could set them to np.nan if preferred)
+    mask = np.isin(clusters, valid_ids)
     filtered_clusters = np.where(mask, clusters, 0)
     filtered_grid = np.where(mask, grid, 0)
     
@@ -187,9 +183,11 @@ def clean_lidar_data(parent_folder, testing=True, replace=False, threshold=25, e
     For each date subdirectory in parent_folder, processes either erosion or accretion files.
     Creates a subfolder 'cleaned' in each date folder and writes out CSVs that have the same
     header and row labels as the incoming files.
+    
+    Optimizations:
+      - Uses os.scandir to quickly iterate over subdirectories.
     """
-    date_folders = [os.path.join(parent_folder, d) for d in os.listdir(parent_folder)
-                    if os.path.isdir(os.path.join(parent_folder, d))]
+    date_folders = [entry.path for entry in os.scandir(parent_folder) if entry.is_dir()]
     if testing:
         date_folders = random.sample(date_folders, min(5, len(date_folders)))
     
@@ -298,9 +296,9 @@ def clean_lidar_data(parent_folder, testing=True, replace=False, threshold=25, e
             plt.tight_layout(rect=[0, 0, 1, 0.96])
             plt.show()
 
-# # Example usage:
-# parent_folder = "/Volumes/group/LiDAR/LidarProcessing/changedetection_m3c2/grid_output/delmar_grid_run_20240927"
 
 
-# # change to replace = False
+parent_folder = "/Volumes/group/LiDAR/LidarProcessing/changedetection_m3c2/grid_output/delmar_grid_run_20240927"
+# change to replace = False
 # clean_lidar_data(parent_folder, testing=False, replace=True, threshold=25, erosion=False)
+clean_lidar_data(parent_folder, testing=False, replace=True, threshold=25, erosion=True)
