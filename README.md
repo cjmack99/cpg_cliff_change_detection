@@ -12,3 +12,33 @@ Three main processing steps are included in this workflow:
 2. Change detection using M3C2 (Lague et al 2013)
 3. Extract change metrics using shore-normal, 2.75D grids
 
+
+
+The workflow goes as follows:
+
+cpg_lidar.level_one(survey_path)
+cpg_lidar.level_two(etc)
+cpr_lidar.level_three()
+
+
+cpg_lidar.level_one() # john knows what these do, translate them to python
+cpg_lidar.level_two() # integrate cliff/beach seperation earlier
+
+cpg_lidar.level_three() 
+  # vegetation removal part 2: canupo or 3masc?
+  # cpg_lidar.m3c2()
+  # cpg_lidar.dbscan()
+  # cpg_lidar.gridding()
+  # cpg_lidar.clean_grids()
+
+
+Add plotting functions
+ # cpg_lidar.display()
+ etc
+
+
+
+
+
+  
+  
