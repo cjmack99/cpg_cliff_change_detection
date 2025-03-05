@@ -298,6 +298,9 @@ def clean_lidar_data(parent_folder, testing=True, replace=False, threshold=25, e
             plt.tight_layout(rect=[0, 0, 1, 0.96])
             plt.show()
 
-# Example usage:
-# parent_folder = "/path/to/your/parent_folder"
-# clean_lidar_data(parent_folder, testing=False, replace=False, threshold=25, erosion=True)
+# # Example usage:
+# parent_folder = "/Volumes/group/LiDAR/LidarProcessing/changedetection_m3c2/grid_output/delmar_grid_run_20240927"
+
+
+# # change to replace = False
+# clean_lidar_data(parent_folder, testing=False, replace=True, threshold=25, erosion=False)
