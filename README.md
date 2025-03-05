@@ -18,22 +18,22 @@ The workflow goes as follows:
 
 cpg_lidar.level_one(survey_path)
 cpg_lidar.level_two(etc)
-cpr_lidar.level_three()
+cpr_lidar.level_three() # thats what this repo currently is/what the paper 1 will be
 
 
 cpg_lidar.level_one() # john knows what these do, translate them to python
 cpg_lidar.level_two() # integrate cliff/beach seperation earlier
 
 cpg_lidar.level_three() 
-  # vegetation removal part 2: canupo or 3masc?
-  # cpg_lidar.m3c2()
-  # cpg_lidar.dbscan()
-  # cpg_lidar.gridding()
-  # cpg_lidar.clean_grids()
+vegetation removal part 2: canupo or 3masc?
+cpg_lidar.m3c2()
+cpg_lidar.dbscan()
+cpg_lidar.gridding()
+cpg_lidar.clean_grids()
 
 
 Add plotting functions
- # cpg_lidar.display()
+cpg_lidar.display()
  etc
 
 
